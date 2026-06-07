@@ -1,8 +1,6 @@
-# Bible TTS Resources
+# OpenBibleTTS Resources
 
 A toolkit for creating Text-to-Speech (TTS) datasets from Bible audio recordings. This project downloads, aligns, and processes Bible audio/text pairs from [Open.Bible](https://open.bible/) into verse-level segments suitable for TTS training.
-
-The full list of available languages is in [Bible audio resources clean](https://docs.google.com/spreadsheets/d/1P4xk-MgjP7nxWTuo8-pTmVTeICUw1dQOT7GXmjgjsSc/edit?gid=830487007#gid=830487007).
 
 ## Features
 
@@ -139,6 +137,8 @@ print(df.groupby('language')['duration_seconds'].sum())
 
 Use the data checks module to identify outliers and validate TTS datasets:
 
+
+
 ```python
 from utils import data_checks
 
@@ -156,6 +156,19 @@ The checker validates and labels samples as:
 - `TOO_SHORT_TRANS`: Transcripts under 10 characters
 - `OFFENDING_DATA`: Pairs with more text than audio (bad for CTC)
 - `NON_NORMAL`: Pairs outside the specified standard deviations from mean ratio
+
+### 5. Speaker Diarization and Upload
+
+Several languages contain recordings from more than one speaker. Speaker labels are assigned using [pyannote/speaker-diarization-precision-2](https://huggingface.co/pyannote/speaker-diarization-precision-2) before uploading to the Hub. 
+
+To run diarization and upload to Hugging Face, set the `PYANNOTE_TOKEN` environment variable to a valid token with access to the pyannote model:
+
+```bash
+export PYANNOTE_TOKEN="..."
+python upload_to_hf.py
+```
+
+If the token is not set, diarization is skipped and `speaker_id` is not included.
 
 ## Output Format
 
@@ -179,19 +192,6 @@ Assamese, Bengali, Central Kurdish, Chhattisgarhi, Dholuo, Ewe, Gamo, Gujarati, 
 
 Languages using **forced alignment** (9 languages):
 Arabic Standard, Chichewa, Dawro, Gofa, Haitian Creole, Kikuyu, Shona, Swahili, Turkish
-
-## Speaker Diarization
-
-Several languages contain recordings from more than one speaker. Speaker labels are assigned using [pyannote/speaker-diarization-precision-2](https://huggingface.co/pyannote/speaker-diarization-precision-2) before uploading to the Hub.
-
-To run diarization, set the `PYANNOTE_TOKEN` environment variable to a valid token with access to the pyannote model:
-
-```bash
-export PYANNOTE_TOKEN="..."
-python upload_to_hf.py
-```
-
-If the token is not set, diarization is skipped and `speaker_id` is not included.
 
 ## References
 
